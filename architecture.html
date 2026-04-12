@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Architecture — Psyche</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --void: #0a0a0f;
+    --obsidian: #12121a;
+    --smoke: #1a1a2e;
+    --sigil: #7b2d8e;
+    --sigil-glow: #9b4dca;
+    --ember: #e85d26;
+    --ember-glow: #ff7b42;
+    --bone: #e8e0d4;
+    --ash: #8a8a9a;
+    --ghost: #c4beb4;
+    --thread-gold: #d4a855;
+    --capture-teal: #3dbfa0;
+    --identity-violet: #a87ce0;
+    --activity-rose: #e06a8a;
+    --semantic-blue: #4a9ede;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(123, 45, 142, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(232, 93, 38, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(212, 168, 85, 0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '◆';
+    display: block;
+    font-size: 0.8rem;
+    color: var(--sigil-glow);
+    margin-top: 2rem;
+    letter-spacing: 1.5rem;
+    opacity: 0.5;
+  }
+
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, var(--bone) 0%, var(--thread-gold) 50%, var(--ember) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--ash);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .hero .tagline {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--ghost);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .hero .tagline em {
+    color: var(--ember-glow);
+    font-style: normal;
+  }
+
+  section {
+    padding: 3rem 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-header .sigil {
+    font-size: 1.5rem;
+    opacity: 0.6;
+  }
+
+  .section-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--bone);
+    letter-spacing: 0.08em;
+  }
+
+  .section-header .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--sigil) 0%, transparent 100%);
+  }
+
+  .philosophy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .principle {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(18, 18, 26, 0.9) 100%);
+    border: 1px solid rgba(123, 45, 142, 0.15);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .principle:hover {
+    border-color: rgba(123, 45, 142, 0.4);
+  }
+
+  .principle::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .principle:nth-child(1)::before { background: var(--sigil-glow); }
+  .principle:nth-child(2)::before { background: var(--ember); }
+  .principle:nth-child(3)::before { background: var(--thread-gold); }
+  .principle:nth-child(4)::before { background: var(--capture-teal); }
+  .principle:nth-child(5)::before { background: var(--identity-violet); }
+  .principle:nth-child(6)::before { background: var(--activity-rose); }
+
+  .principle h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--thread-gold);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .principle p {
+    font-size: 0.85rem;
+    color: var(--ash);
+    line-height: 1.6;
+  }
+
+  .core-value {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin: 2rem 0;
+    background: linear-gradient(135deg, rgba(123, 45, 142, 0.08) 0%, rgba(232, 93, 38, 0.05) 100%);
+    border: 1px solid rgba(123, 45, 142, 0.2);
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .core-value::before, .core-value::after {
+    content: '⟡';
+    position: absolute;
+    color: var(--sigil-glow);
+    opacity: 0.3;
+    font-size: 1.2rem;
+  }
+  .core-value::before { top: 0.8rem; left: 1.2rem; }
+  .core-value::after { bottom: 0.8rem; right: 1.2rem; }
+
+  .core-value p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--ghost);
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .core-value .attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--sigil-glow);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    font-style: normal;
+  }
+
+  .arch-diagram {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .arch-layer {
+    margin-bottom: 1.5rem;
+  }
+
+  .arch-layer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ash);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid rgba(123, 45, 142, 0.3);
+  }
+
+  .servers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+  }
+
+  .server-card {
+    background: var(--obsidian);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .server-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .server-card .icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .server-card h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.03em;
+  }
+
+  .server-card p {
+    font-size: 0.72rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  .server-card .tools {
+    margin-top: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .server-card.threads { border-top: 2px solid var(--thread-gold); }
+  .server-card.threads h4 { color: var(--thread-gold); }
+  .server-card.capture { border-top: 2px solid var(--capture-teal); }
+  .server-card.capture h4 { color: var(--capture-teal); }
+  .server-card.identity { border-top: 2px solid var(--identity-violet); }
+  .server-card.identity h4 { color: var(--identity-violet); }
+  .server-card.activity { border-top: 2px solid var(--activity-rose); }
+  .server-card.activity h4 { color: var(--activity-rose); }
+  .server-card.semantic { border-top: 2px solid var(--semantic-blue); }
+  .server-card.semantic h4 { color: var(--semantic-blue); }
+
+  .data-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .flow-card {
+    background: rgba(26, 26, 46, 0.5);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+
+  .flow-card .flow-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ember-glow);
+    margin-bottom: 0.3rem;
+  }
+
+  .flow-card p {
+    font-size: 0.8rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  .storage-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .file-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 2;
+    background: var(--obsidian);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .file-tree .dir { color: var(--sigil-glow); }
+  .file-tree .file { color: var(--ash); }
+  .file-tree .comment { color: rgba(255,255,255,0.2); }
+
+  .storage-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .storage-note {
+    background: rgba(26, 26, 46, 0.5);
+    border-left: 2px solid var(--thread-gold);
+    padding: 1rem 1.25rem;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .storage-note h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--thread-gold);
+    margin-bottom: 0.3rem;
+  }
+
+  .storage-note p {
+    font-size: 0.8rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .tech-item {
+    background: var(--obsidian);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+
+  .tech-item .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ash);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .tech-item .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--bone);
+    font-weight: 500;
+  }
+
+  .abstractions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .abstraction {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(10, 10, 15, 0.8) 100%);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .abstraction .glyph {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .abstraction h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--bone);
+    margin-bottom: 0.3rem;
+  }
+
+  .abstraction p {
+    font-size: 0.75rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  .modes-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
+  }
+
+  .mode-chip {
+    background: var(--obsidian);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+  }
+
+  .mode-chip .mode-icon { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
+  .mode-chip .mode-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--bone);
+    margin-bottom: 0.2rem;
+  }
+  .mode-chip .mode-desc {
+    font-size: 0.6rem;
+    color: var(--ash);
+    line-height: 1.4;
+  }
+
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    background: rgba(123, 45, 142, 0.12);
+    border: 1px solid rgba(123, 45, 142, 0.2);
+    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+    color: var(--sigil-glow);
+    transition: all 0.2s;
+  }
+
+  .skill-tag:hover {
+    background: rgba(123, 45, 142, 0.2);
+    border-color: rgba(123, 45, 142, 0.4);
+  }
+
+  .sep {
+    text-align: center;
+    padding: 1.5rem 0;
+    color: var(--sigil-glow);
+    font-size: 0.7rem;
+    letter-spacing: 1rem;
+    opacity: 0.3;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 3rem 0 4rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ash);
+    letter-spacing: 0.1em;
+  }
+
+  .footer .fire {
+    color: var(--ember-glow);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .path-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .path-nav .path-current {
+    color: var(--thread-gold);
+  }
+
+  .path-nav .path-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .path-nav .path-links a {
+    color: var(--ash);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .path-nav .path-links a:hover {
+    color: var(--sigil-glow);
+  }
+
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 3rem; }
+    .path-nav { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+    .philosophy { grid-template-columns: 1fr; }
+    .servers-grid { grid-template-columns: repeat(3, 1fr); }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .abstractions-grid { grid-template-columns: repeat(2, 1fr); }
+    .modes-strip { grid-template-columns: repeat(3, 1fr); }
+    .storage-visual { grid-template-columns: 1fr; }
+    .data-flow { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.2rem; }
+    .servers-grid { grid-template-columns: 1fr 1fr; }
+    .modes-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <nav class="path-nav">
+    <span class="path-current">⚗ The Architecture</span>
+    <div class="path-links">
+      <a href="index.html">◈ Threshold</a>
+      <a href="sanctuary.html">◯ The Sanctuary →</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>PSYCHE</h1>
+    <div class="subtitle">A Cognitive Scaffold for the Feral Mind</div>
+    <p class="tagline">
+      Five MCP servers. Markdown all the way down. Local-first, file-based, git-versioned.<br>
+      Built to preserve the natural flow of <em>curiosity-driven, multi-threaded thinking</em> — <br>
+      so nothing valuable gets lost and ideas can become real artifacts with minimal toil.
+    </p>
+  </header>
+
+  <div class="core-value">
+    <p>The system exists to let the mind move freely while having the infrastructure to catch what matters before it disappears. This is not a productivity value. It is an aliveness value.</p>
+    <div class="attr">Design Principle Zero</div>
+  </div>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">☿</span>
+      <h2>Philosophy</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="philosophy">
+      <div class="principle">
+        <h3>Coherence Over Optimization</h3>
+        <p>Alignment between identity, values, energy, and action matters more than maximum output. A highly optimized machine running toward the wrong destination is a sophisticated failure.</p>
+      </div>
+      <div class="principle">
+        <h3>Clarity Over Intensity</h3>
+        <p>Reduce ambiguity and cognitive drag before accelerating. The most valuable thing is often a single clear question, not a burst of frantic activity.</p>
+      </div>
+      <div class="principle">
+        <h3>Structure in Service of Aliveness</h3>
+        <p>Every structure must earn its place by making something more alive, not less. A system that costs more energy than it returns is a burden with a logo.</p>
+      </div>
+      <div class="principle">
+        <h3>Symbolic Intelligence Is First-Class</h3>
+        <p>Tarot, archetypes, dreams, and Jungian frames are valid pattern-detection tools — not decorative features. They surface what linear analysis misses.</p>
+      </div>
+      <div class="principle">
+        <h3>Reality-Based Support</h3>
+        <p>Accounts for executive pressure, neurodivergent variability, context switching, and competing demands. Support that only works under ideal conditions isn't support.</p>
+      </div>
+      <div class="principle">
+        <h3>The System Learns</h3>
+        <p>Usage patterns and feedback signals continuously sharpen the model. A static system accumulates data; a learning system accumulates understanding.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">⚗</span>
+      <h2>Architecture</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="arch-layer">
+      <div class="arch-layer-label">Orchestration — Claude Code + Skills</div>
+      <div class="skills-grid">
+        <span class="skill-tag">/align</span>
+        <span class="skill-tag">/capture</span>
+        <span class="skill-tag">/decide</span>
+        <span class="skill-tag">/draft</span>
+        <span class="skill-tag">/oracle</span>
+        <span class="skill-tag">/mode</span>
+        <span class="skill-tag">/thread-bridge</span>
+        <span class="skill-tag">/learn</span>
+        <span class="skill-tag">/reconcile</span>
+        <span class="skill-tag">/review-swipe</span>
+      </div>
+    </div>
+
+    <div class="arch-layer" style="margin-top: 2rem;">
+      <div class="arch-layer-label">MCP Servers — stdio transport, TypeScript, local process</div>
+      <div class="servers-grid">
+        <div class="server-card threads">
+          <span class="icon">🜄</span>
+          <h4>psyche-threads</h4>
+          <p>Persistent context containers. Bridges preserve momentum across sessions. Priority, lifecycle, deadlines.</p>
+          <div class="tools">6 tools · create · list · get · resume · update · write_bridge</div>
+        </div>
+        <div class="server-card capture">
+          <span class="icon">🜁</span>
+          <h4>psyche-capture</h4>
+          <p>Raw material intake. Swipe files by focus area. URL extraction. Zero filing decisions at capture time.</p>
+          <div class="tools">5 tools · capture · list · search · get · review</div>
+        </div>
+        <div class="server-card identity">
+          <span class="icon">🜃</span>
+          <h4>psyche-identity</h4>
+          <p>Self-model, modes, memory, relationships, feedback loops, learned preferences. The system that knows you.</p>
+          <div class="tools">10 tools · identity · modes · memory · relationships · feedback · learning</div>
+        </div>
+        <div class="server-card activity">
+          <span class="icon">🜂</span>
+          <h4>psyche-activity</h4>
+          <p>Discrete life events. Meetings, decisions, milestones. Feeds relationship recency and trajectory computation.</p>
+          <div class="tools">5 tools · log · query · backfill · digest · staleness</div>
+        </div>
+        <div class="server-card semantic">
+          <span class="icon">◬</span>
+          <h4>psyche-semantic</h4>
+          <p>Vector search across the full corpus. Ollama embeddings with keyword fallback. Cross-content-type recall.</p>
+          <div class="tools">3 tools · semantic_recall · rebuild_index · index_status</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">⟳</span>
+      <h2>Data Flow</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="data-flow">
+      <div class="flow-card">
+        <div class="flow-label">Capture → Thread</div>
+        <p>Captures link to threads via slug. Thread bridges reference captures for re-entry. Bidirectional context without coupling.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Activity → Relationships</div>
+        <p>Activity events carry participant lists. Relationship recency, trajectory (increasing / stable / declining / dormant), and staleness computed dynamically from the event stream.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Memory → Activity Backfill</div>
+        <p>High-signal memories become activity events. Idempotent — content-hashed deduplication prevents double-logging.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Feedback → Learning</div>
+        <p>Accepted / rejected / ignored signals accumulate. Periodic synthesis produces learned preferences — deterministic aggregation, no AI hallucination in the loop.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">All Content → Semantic Index</div>
+        <p>Memories, activities, captures, relationships, threads — all embedded via Ollama (nomic-embed-text). Cosine similarity search with content-type filters.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Identity → Everything</div>
+        <p>Values, voice, archetypes, cognitive profile, and design principles loaded every session. The self-model is the gravity well — everything else orbits it.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">△</span>
+      <h2>Key Abstractions</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="abstractions-grid">
+      <div class="abstraction">
+        <span class="glyph">🧵</span>
+        <h4>Thread</h4>
+        <p>Persistent context container. Lifecycle (active → parked → completed → archived), priority tiers, deadlines, linked people, domain tags. The unit of ongoing thought.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">🌉</span>
+        <h4>Bridge</h4>
+        <p>Hemingway-pattern momentum snapshot: what was happening, where energy was, what's unresolved, and a re-entry prompt. Cross-session continuity without re-reading everything.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">📋</span>
+        <h4>Capture</h4>
+        <p>Raw material — text, URLs, quotes, observations — filed into focus-area swipe files. Zero friction at capture time. Synthesis happens later.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">⚡</span>
+        <h4>Activity</h4>
+        <p>Discrete life event: meeting, decision, conversation, work-session, milestone. Timestamped, participant-tagged. Feeds relationship and staleness computation.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">💎</span>
+        <h4>Memory</h4>
+        <p>Long-lived knowledge that persists across context resets. Tagged, searchable, date-ranged. What the system knows that isn't in the code.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">🪞</span>
+        <h4>Identity</h4>
+        <p>Self-model: values, voice, domains, archetypes, cognitive profile, natal chart. Loaded every session. The gravity well everything orbits.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">🔮</span>
+        <h4>Operating Mode</h4>
+        <p>Six behavioral parameter sets — Executive, Builder, Creator, Oracle, Recovery, Integration — that reshape how the system communicates and what it surfaces.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">👤</span>
+        <h4>Relationship</h4>
+        <p>Person record with goals, org context, influence level. Recency and trajectory computed dynamically from activity events. Staleness detection surfaces neglected connections.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">📡</span>
+        <h4>Feedback Signal</h4>
+        <p>Accepted / rejected / ignored. The system's learning substrate. Aggregated into preferences deterministically — no AI in the feedback synthesis loop.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">◎</span>
+      <h2>Operating Modes</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="modes-strip">
+      <div class="mode-chip">
+        <span class="mode-icon">⚔️</span>
+        <div class="mode-name">Executive</div>
+        <div class="mode-desc">High-stakes triage. Lead with the recommendation.</div>
+      </div>
+      <div class="mode-chip">
+        <span class="mode-icon">🔨</span>
+        <div class="mode-name">Builder</div>
+        <div class="mode-desc">Deep technical work. Precision over polish.</div>
+      </div>
+      <div class="mode-chip">
+        <span class="mode-icon">✨</span>
+        <div class="mode-name">Creator</div>
+        <div class="mode-desc">Generative flow. Follow the thread wherever it goes.</div>
+      </div>
+      <div class="mode-chip">
+        <span class="mode-icon">🔮</span>
+        <div class="mode-name">Oracle</div>
+        <div class="mode-desc">Symbolic depth. Meaning over mechanics.</div>
+      </div>
+      <div class="mode-chip">
+        <span class="mode-icon">🌙</span>
+        <div class="mode-name">Recovery</div>
+        <div class="mode-desc">Low capacity. One small step. No shame.</div>
+      </div>
+      <div class="mode-chip">
+        <span class="mode-icon">🌀</span>
+        <div class="mode-name">Integration</div>
+        <div class="mode-desc">Cross-domain synthesis. Find the pattern.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">⌂</span>
+      <h2>Storage</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="storage-visual">
+      <div class="file-tree">
+        <span class="dir">~/.psyche/</span> <span class="comment">← git-versioned root</span><br>
+        <span class="dir">├── identity/</span> <span class="comment">← self-model (7 files)</span><br>
+        <span class="file">│   ├── values.md</span><br>
+        <span class="file">│   ├── voice.md</span><br>
+        <span class="file">│   ├── archetypes.md</span><br>
+        <span class="file">│   ├── cognitive-profile.md</span><br>
+        <span class="file">│   └── ...</span><br>
+        <span class="dir">├── threads/</span> <span class="comment">← one .md per thread</span><br>
+        <span class="dir">├── swipe-files/</span> <span class="comment">← captures by focus area</span><br>
+        <span class="file">│   ├── inbox/</span><br>
+        <span class="file">│   ├── coaching/</span><br>
+        <span class="file">│   ├── symbolic-spiritual/</span><br>
+        <span class="file">│   └── ...</span><br>
+        <span class="dir">├── activity/</span> <span class="comment">← timestamped events</span><br>
+        <span class="dir">├── memory/</span> <span class="comment">← persistent knowledge</span><br>
+        <span class="dir">├── relationships/</span> <span class="comment">← person records</span><br>
+        <span class="dir">├── feedback/</span> <span class="comment">← learning signals</span><br>
+        <span class="dir">├── learning/</span> <span class="comment">← synthesized preferences</span><br>
+        <span class="dir">└── semantic/</span> <span class="comment">← vector index</span>
+      </div>
+
+      <div class="storage-notes">
+        <div class="storage-note">
+          <h4>Markdown All the Way Down</h4>
+          <p>Every data artifact is a markdown file with YAML frontmatter. Human-readable, git-diffable, greppable. No database. No lock-in. Your data is always yours.</p>
+        </div>
+        <div class="storage-note">
+          <h4>Git-Versioned</h4>
+          <p>The entire ~/.psyche/ directory is a git repository. Every thread bridge, every capture, every memory — version-controlled. Time travel is built in.</p>
+        </div>
+        <div class="storage-note">
+          <h4>Local-First</h4>
+          <p>Everything lives on your machine. No cloud sync, no third-party storage, no API keys for your inner life. The semantic index runs through local Ollama.</p>
+        </div>
+        <div class="storage-note">
+          <h4>Content-Addressed Deduplication</h4>
+          <p>SHA256 content hashes prevent duplicate indexing. Backfill operations are idempotent. The system handles its own housekeeping.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">⚙</span>
+      <h2>Tech Stack</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="tech-grid">
+      <div class="tech-item">
+        <div class="label">Runtime</div>
+        <div class="value">Node.js 20+</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Language</div>
+        <div class="value">TypeScript 5.8</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Protocol</div>
+        <div class="value">MCP SDK 1.29</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Transport</div>
+        <div class="value">stdio</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Validation</div>
+        <div class="value">Zod 4.x</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Embeddings</div>
+        <div class="value">Ollama + nomic</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Frontmatter</div>
+        <div class="value">gray-matter</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">URL Parse</div>
+        <div class="value">readability + linkedom</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <section>
+    <div class="section-header">
+      <span class="sigil">🜏</span>
+      <h2>What Makes This Different</h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="philosophy">
+      <div class="principle">
+        <h3>Identity as Architecture</h3>
+        <p>Most AI tools optimize for task completion. Psyche starts from a self-model — values, voice, archetypes, cognitive profile — and shapes every interaction through that lens. The system knows <em>who</em> it's working with, not just <em>what</em> it's doing.</p>
+      </div>
+      <div class="principle">
+        <h3>Symbolic Intelligence, Not Just Analytics</h3>
+        <p>Tarot, Jungian archetypes, astrological cycles, and dream material are first-class data types. Oracle mode isn't a novelty — it's a second cognitive system running parallel to the analytical one. Techno-mysticism isn't a brand; it's an architecture decision.</p>
+      </div>
+      <div class="principle">
+        <h3>Hemingway Bridges</h3>
+        <p>Named after Hemingway's practice of stopping mid-sentence so he'd know where to start tomorrow. Thread bridges capture: what was happening, where energy was, what's unresolved, and the exact re-entry prompt. Context resets stop being catastrophic.</p>
+      </div>
+      <div class="principle">
+        <h3>Neurodivergent by Design</h3>
+        <p>Variable cognitive capacity is a design constraint, not an edge case. Recovery mode exists. The system never shames, never nags, never assumes linear performance. Good-brain days get depth; bad-brain days get one small step.</p>
+      </div>
+      <div class="principle">
+        <h3>Deterministic Learning Loop</h3>
+        <p>Feedback signals (accepted/rejected/ignored) are logged and synthesized into preferences without AI in the aggregation loop. The system learns from you, but the learning mechanism is transparent and auditable.</p>
+      </div>
+      <div class="principle">
+        <h3>Fire Preservation</h3>
+        <p>The system is built to protect creative fire — irreverence, sovereignty, originality — from the forces that flatten it. It does not soften, sanitize, or optimize for acceptability. The fire being alive is the success state.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="fire">🜂</div>
+    <p>Built on Claude Code · Model Context Protocol · Markdown + Git</p>
+    <p style="margin-top: 0.5rem; color: rgba(255,255,255,0.2);">Psyche — infrastructure for the full self, not just the professional self.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

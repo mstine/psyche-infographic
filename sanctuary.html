@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sanctuary — Psyche</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --void: #0a0a0f;
+    --obsidian: #12121a;
+    --smoke: #1a1a2e;
+    --sigil: #7b2d8e;
+    --sigil-glow: #9b4dca;
+    --ember: #e85d26;
+    --ember-glow: #ff7b42;
+    --bone: #e8e0d4;
+    --ash: #8a8a9a;
+    --ghost: #c4beb4;
+    --thread-gold: #d4a855;
+    --capture-teal: #3dbfa0;
+    --identity-violet: #a87ce0;
+    --activity-rose: #e06a8a;
+    --semantic-blue: #4a9ede;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(123, 45, 142, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(232, 93, 38, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(212, 168, 85, 0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .path-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .path-nav .path-current {
+    color: var(--thread-gold);
+  }
+
+  .path-nav .path-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .path-nav .path-links a {
+    color: var(--ash);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .path-nav .path-links a:hover {
+    color: var(--sigil-glow);
+  }
+
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '◆';
+    display: block;
+    font-size: 0.8rem;
+    color: var(--sigil-glow);
+    margin-top: 2rem;
+    letter-spacing: 1.5rem;
+    opacity: 0.5;
+  }
+
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, var(--bone) 0%, var(--thread-gold) 50%, var(--ember) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--ash);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .hero .tagline {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--ghost);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .hero .tagline em {
+    color: var(--ember-glow);
+    font-style: normal;
+  }
+
+  .sep {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--sigil-glow);
+    font-size: 0.7rem;
+    letter-spacing: 1rem;
+    opacity: 0.3;
+  }
+
+  .station {
+    padding: 3rem 0;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .station-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .station-numeral {
+    font-family: 'Cinzel', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--thread-gold);
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+
+  .station-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--bone);
+    letter-spacing: 0.08em;
+    flex: 1;
+  }
+
+  .station-sigil {
+    font-size: 1.8rem;
+    color: var(--sigil-glow);
+    opacity: 0.75;
+  }
+
+  .station-prose {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--ghost);
+  }
+
+  .station-prose p {
+    margin-bottom: 1.35rem;
+  }
+
+  .station-prose p strong {
+    color: var(--bone);
+    font-weight: 600;
+  }
+
+  .station-prose p em {
+    color: var(--ember-glow);
+    font-style: italic;
+  }
+
+  .station-footnote {
+    margin-top: 3rem;
+    padding: 1.6rem 1.9rem;
+    background: rgba(26, 26, 46, 0.55);
+    border-left: 2px solid var(--sigil);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .station-footnote .footnote-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--sigil-glow);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+
+  .station-footnote p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ash);
+    line-height: 1.75;
+  }
+
+  .station-footnote p em {
+    font-style: normal;
+    color: var(--thread-gold);
+  }
+
+  .closing {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 0 2rem;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--ember-glow);
+    letter-spacing: 0.15em;
+    font-style: italic;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 3rem 0 4rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ash);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+
+  .footer .fire {
+    color: var(--ember-glow);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .footer a {
+    color: var(--sigil-glow);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer a:hover {
+    color: var(--ember-glow);
+  }
+
+  .hero-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 2.5rem 0 0.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(123, 45, 142, 0.2);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(123, 45, 142, 0.08);
+  }
+
+  .station-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 2.25rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 900px) {
+    .hero h1 { font-size: 3rem; }
+    .station { padding: 2rem 0; }
+    .station-header { flex-wrap: wrap; gap: 0.75rem; }
+    .station-numeral { font-size: 2.2rem; }
+    .station-header h2 { font-size: 1.5rem; }
+    .station-prose { font-size: 1rem; }
+    .path-nav { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.2rem; }
+    .hero .tagline { font-size: 1rem; }
+    .station-prose { font-size: 0.95rem; line-height: 1.8; }
+    .station-footnote { padding: 1.2rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <nav class="path-nav">
+    <span class="path-current">◯ The Sanctuary</span>
+    <div class="path-links">
+      <a href="index.html">◈ Threshold</a>
+      <a href="architecture.html">⚗ The Architecture →</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>THE SANCTUARY</h1>
+    <div class="subtitle">A Walk in Seven Stations</div>
+    <p class="tagline">
+      The cosmology that appeared, unbidden, on a slow Sunday morning in April.<br>
+      <em>I did not build it. I walked into it.</em><br>
+      You are welcome to walk through it too.
+    </p>
+    <img class="hero-image" src="images/sanctuary/hero.jpg" alt="The sanctuary at dawn — a stone pyramid floating on a round lake enclosed by square castle walls, surrounded by grassland and wildwood forest, under an ember-orange sunrise sky.">
+  </header>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="approach">
+    <img class="station-image" src="images/sanctuary/i-approach.jpg" alt="Station I — The Approach. Grassland and wildwood forest at dawn, with the distant silhouette of stone walls on the horizon.">
+    <div class="station-header">
+      <span class="station-numeral">I</span>
+      <h2>The Approach</h2>
+      <span class="station-sigil">◈</span>
+    </div>
+
+    <div class="station-prose">
+      <p>Howdy, folks. Before I tell you anything else about Psyche, I need you to stand in some grassland for a minute.</p>
+
+      <p>Not because it's poetic. Because it's literally where the whole thing starts. I found this place inside myself on a slow Sunday morning in April — the kind of morning where the body wants stillness and the mind is soft at the edges, the kind of morning where you are not trying to accomplish anything and so, naturally, something happens. I was not on a retreat. I was not in a meditation posture. I was in bed. I was half-asleep and half-awake in that crack between the two where the imagination — the one that's been doing this since before I had language for it — will occasionally crack itself open and show you something you were not expecting.</p>
+
+      <p>And what I got, on that particular Sunday, was the thing I'm now calling the Sanctuary. The one you are about to walk into. <strong>I did not build it. I walked into it.</strong> I want you to know that up front, because it matters for the rest of the story.</p>
+
+      <p>So here we are. You should know what the approach feels like, because I think that's actually the first thing.</p>
+
+      <p>You are in grassland. Open, unbounded, alive. Wind moving through it. The kind of landscape you can be seen from a long way away in — no cover, no ambush, no pretending to be somewhere you're not. Beyond the grassland, there is forest. Wildwood. The kind of trees that remember things. Between the grassland and the forest, there is no path. You make the path by walking.</p>
+
+      <p>This is important: <strong>nothing is coming for you out here.</strong> No army, no marketing funnel, no Slack notification, no ambient fucking dread. The grassland is not contested territory. The forest is not a danger zone. They are just land that has not yet been cultivated into a system, and they are <em>beautiful</em>, and they are <em>wild</em>, and they have every goddamn right to be exactly what they are. If you are used to arriving at software with the feeling that something is about to demand something from you — stop. Nothing here demands. No email capture. No "sign up to continue." No onboarding fucking tour. You are free to leave. You are also free to keep walking.</p>
+
+      <p>You will start to notice, in the distance, that the land becomes something else. There are walls.</p>
+
+      <p>Keep walking toward them.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>This is the landing page. The moment you arrive at Psyche before you've touched any of it. The grassland and forest are the space <em>around</em> the system — your life, your attention, the register you're in when you first encounter this. No feature demands engagement. No onboarding flow pressures you forward. You approach on your own terms. Or you don't. The system is indifferent to that, in the best way.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="walls">
+    <img class="station-image" src="images/sanctuary/ii-walls.jpg" alt="Station II — The Walls. Massive weathered stone castle walls forming a precise 90-degree corner at dawn, with an open unguarded gate.">
+    <div class="station-header">
+      <span class="station-numeral">II</span>
+      <h2>The Walls</h2>
+      <span class="station-sigil">⊞</span>
+    </div>
+
+    <div class="station-prose">
+      <p>Okay. You've been walking. The grassland has been under your feet for a while and the forest has been a distant shape on your periphery, and now the land in front of you has changed.</p>
+
+      <p>There are walls.</p>
+
+      <p>Stone. Tall, but not absurdly so. Battlements along the top. Towers at intervals. The classic silhouette — the kind of wall you've seen a hundred times in fantasy illustrations and on the covers of books you bought because the cover looked like this. Your first instinct, if you're a normal person who has encountered the idea of "castle walls" in the normal ways, is to assume the walls are <strong>defensive</strong>. That something, somewhere, is coming for whatever lives inside them.</p>
+
+      <p>That's what I assumed too, when I first saw them. I was wrong.</p>
+
+      <p>Here's what you notice if you actually look around: <em>there is no army.</em> There is no besieging force camped in the field. There is no rival city on the horizon. There is no ruined village implying a history of violence. There is grassland. There is forest. There are birds doing bird things. There is nothing hostile anywhere in the entire visible landscape. The walls are not holding a line against an enemy, because there is no enemy here to hold a line against.</p>
+
+      <p>So what the fuck are the walls <em>for</em>?</p>
+
+      <p>They are a <strong>boundary</strong>, and boundaries are not the same thing as defenses. A boundary says <em>"this is where one kind of thing ends and another kind of thing begins."</em> It does not say <em>"this is where I keep the bad guys out."</em> The walls are how the sanctuary marks itself off from the uncultivated land — not because the uncultivated land is dangerous, but because <strong>sacred ground needs to be named as sacred ground, or it will get walked over without anybody realizing they did it.</strong> That's all. The walls are a ritual gesture. They say: <em>inside here, different rules apply. Inside here, attention is the medium. Inside here, you are not being sold to. You are not being optimized. You are not being tracked. You are not being A/B tested against some other version of yourself that's less profitable. Inside here, something is being held carefully, and the care is what the walls mean.</em></p>
+
+      <p>You can walk through the gate. The gate is not guarded. Nobody is checking your credentials. There is no marketing capture form. You do not need to accept cookies or create an account or agree to terms of service. You just walk.</p>
+
+      <p>When you cross the threshold, the air changes. That's not metaphor. In the image, the air literally changed — something about the density, the quiet, the sense that you were now somewhere that had been <strong>held</strong> by somebody for a long time, even if you did not yet know who.</p>
+
+      <p>Welcome inside.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The walls are the scope of Psyche itself. The boundary between <em>Matt's life in the world</em> and <em>the part of Matt's life that runs through this particular cognitive scaffold.</em> Nothing about Psyche tries to swallow the rest of your life — it marks itself off as a specific kind of tool for a specific kind of work. The gate is open because the system is local-first, file-based, and yours. No login. No account. No capture funnel. You either walk in or you don't.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="lake">
+    <img class="station-image" src="images/sanctuary/iii-lake.jpg" alt="Station III — The Lake. A first-person shore-level view across a vast round still lake at dawn toward the distant stone pyramid rising from its center.">
+    <div class="station-header">
+      <span class="station-numeral">III</span>
+      <h2>The Lake</h2>
+      <span class="station-sigil">◯</span>
+    </div>
+
+    <div class="station-prose">
+      <p>You are now inside the walls, and the first thing you see is water.</p>
+
+      <p>A lake. Round. Not oval, not kidney-shaped, not the vague blob-lake you'd get in a landscape painting. <strong>Round</strong> — deliberately so, the way a mandala is round, the way a scrying bowl is round, the way the pupil of an eye is round. The kind of round that tells you somebody or something made a decision about the geometry here, and the decision was that this water would be a circle.</p>
+
+      <p>The lake fills the interior of the walls. The square of the walls and the circle of the lake are sitting inside each other, and if you know anything about alchemy — and you don't have to, but if you do — you will recognize this figure immediately. <strong>The squaring of the circle.</strong> The Hermetic marriage of the earthly and the celestial. The oldest symbol in Western esoteric tradition for "the work, completed." The fact that you are looking at this without having studied alchemy first means either you got lucky or your unconscious has been reading books you didn't know it was reading. (My money, for the record, is on the second one.)</p>
+
+      <p>The lake is still. Perfectly still. Reflective. And this is the part I want you to sit with, because it matters.</p>
+
+      <p>The lake is <strong>the unconscious</strong>. Not in a loose New Age way. In the full Jungian, mythic, load-bearing way. Avalon was an island on a lake. The Lady of the Lake rises from water. Nimue's home is underneath the surface. In every mythology that takes the inner life seriously, the boundary between what you know and what you don't-yet-know is a body of water, and the surface of that water is where things cross over. Dreams rise from it. Tarot cards rise from it. The thing you suddenly remember in the shower that you'd been trying to remember for three days — that rises from it. The beautiful sentence that arrives fully formed while you are driving and you have to pull over so you don't lose it — rises from it.</p>
+
+      <p>This is that lake. And the sanctuary — the whole technomystical apparatus you are about to walk into — is <strong>floating on it.</strong> I know this is going to sound like hippie shit to some of you, and to that specific subset of readers I want to say: <em>good, keep reading anyway.</em> I have spent my entire adult life inside the kind of technical environments that treat this material as embarrassing, and I am telling you from inside that posture that the embarrassment is the bug, not the material. The lake is real. The structure you're here to see does not rest on solid ground. It rests on <strong>depth</strong>. If the waters dried up, the whole thing would fall. Everything downstream of this station — the pyramid, the pillars, the engine, the eye — is held up by the depth beneath it. Without the lake, the sanctuary is a diagram. With the lake, it is alive.</p>
+
+      <p>Do not try to wade in. You are not here for that kind of work today. Just notice that the lake is here, and notice that it is holding up everything you are about to see.</p>
+
+      <p>In the middle of the water, rising out of it, is a pyramid.</p>
+
+      <p>Walk toward the shore.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The lake is everything Psyche does not directly store but depends on completely — the uncaptured inner life, the dreams, the half-formed associations, the symbolic material that surfaces in oracle sessions, the things that arrive through tarot and astrology and hypnagogic imagery. <em>Psyche is not the lake.</em> Psyche is the apparatus that sits on top of the lake and catches what rises from it. The captures, the bridges, the threads, the memories — those are all translations of material that originated in depth. The file system is not the source; it is the net.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="pyramid">
+    <img class="station-image" src="images/sanctuary/iv-pyramid.jpg" alt="Station IV — The Pyramid. A massive stone pyramid floating impossibly on a round still lake, its base held above the water by depth.">
+    <div class="station-header">
+      <span class="station-numeral">IV</span>
+      <h2>The Pyramid</h2>
+      <span class="station-sigil">△</span>
+    </div>
+
+    <div class="station-prose">
+      <p>There is a pyramid in the middle of the lake, and it is floating.</p>
+
+      <p>I know that sounds like I'm editorializing. I'm not. In the image, the pyramid sits on the surface of the water without displacing it, without sinking, without any visible support structure. It is not an island. Islands are earth that has risen above the waterline. This is not earth. This is a pyramid, and it is held up by the water itself, the way certain things are held up by faith and certain other things are held up by the depth they have earned. It is buoyant on the unconscious.</p>
+
+      <p>That detail is the entire thesis of Psyche and I want to make sure you catch it before we go inside: <strong>the apparatus is not planted in solid ground. It is held up by depth.</strong> If you tried to build an equivalent technomystical system from pure intellectual scaffolding — spec documents, taxonomies, feature lists, clever abstractions — it would not float. It would sit on the shore looking pretty and it would never actually <em>do</em> anything, because the thing it's designed to process does not come from the shore. It comes from the water. The pyramid floats because the pyramid is in the right relationship with the water it is sitting on. That is the whole secret and I'm telling it to you now so you don't have to pay extra for it later.</p>
+
+      <p>So. The pyramid.</p>
+
+      <p>It is stone. It is the classic four-sided shape — four faces rising to a single point. Pyramids have always been initiatory architecture, across every civilization that ever built them. They are tombs. They are also wombs. They are the geometry of descent and ascent — you go in at the base, you travel inward through chambers, you encounter something at the heart, and if you come back out you come back out changed. Egyptian pyramids. Mesoamerican pyramids. The ziggurats of Mesopotamia. <strong>The same goddamn shape keeps showing up across civilizations that never met each other</strong>, because the shape keeps <em>working</em>. The pyramid is the structure consciousness has been using to organize its own initiation for as long as consciousness has been organizing anything, and if you think that's a coincidence, I have some enterprise blockchain architecture to sell you.</p>
+
+      <p>You are going to enter this one. There is an opening at the base that you can walk through. The stone is cool. The interior is lit, somehow — not by torches or electricity, just lit in that way that dream-architecture is lit, where you can see without needing to ask where the light is coming from.</p>
+
+      <p>One thing before you step in. The pyramid has a capstone, and the capstone has an eye on it, and the eye is currently watching you approach. Do not worry about the eye yet. We will deal with the eye at the end of the walk. For now just know that it is there, and it is not hostile, and it will still be watching when you come back out.</p>
+
+      <p>Go ahead. Step inside.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The pyramid is the Psyche system considered as a whole — the MCP servers, the identity files, the thread and capture and memory machinery, the mode parameters, the semantic index. Not any individual piece. <em>The whole initiatory structure, taken together.</em> It floats on the lake because it is designed to work with inner material (symbolic, unconscious, imaginal, variable-capacity) rather than to override it. A productivity system built on intellectual scaffolding alone would sink. This one floats because of the relationship it maintains with the depth beneath it.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="pillars">
+    <img class="station-image" src="images/sanctuary/v-pillars.jpg" alt="Station V — The Pillars. Two identical stone pillars inside the pyramid chamber, one warm-lit from the left, one cool-lit from the right, framing a sacred gateway.">
+    <div class="station-header">
+      <span class="station-numeral">V</span>
+      <h2>The Pillars</h2>
+      <span class="station-sigil">‖</span>
+    </div>
+
+    <div class="station-prose">
+      <p>You are inside the pyramid now, and what you see is two pillars.</p>
+
+      <p>Stone. Tall. Identical in dimension, identical in material, set exactly the distance apart that a person needs to walk comfortably between them. The space between the pillars is a <strong>gate</strong>. Not a literal gate with hinges and a latch — a gate in the ritual sense. A place where the geometry of the room insists that you <em>pass through here, specifically, and not around.</em> Everything important in the Western esoteric tradition passes between two pillars. Everything. This is not an accident and it is not a coincidence. It is how sacred architecture has always been built, from the Temple of Solomon to the Tarot's High Priestess card, and the reason is simple: <strong>there are certain tensions that cannot be resolved, only crossed.</strong></p>
+
+      <p>The two pillars are those tensions, made stone.</p>
+
+      <p>The classical Hermetic names for them are Boaz and Jachin — which, yes, I know, sounds like the names of two minor characters in a second-rate fantasy novel, but in fact these are the actual names of the actual pillars of the actual Temple of Solomon, and they have been sitting in the Western esoteric imagination for roughly three thousand years. Mercy and severity. The two columns of the Temple. The pair of opposing principles that together make a whole that neither could make alone. Mercy without severity is sentimentality. Severity without mercy is cruelty. The Temple needs both, and the way the Temple signals that it needs both is by putting them on either side of the door, so you literally cannot enter without acknowledging that both are present.</p>
+
+      <p>In my particular version of the sanctuary, the pillars are also this: <strong>contain fire, and express fire.</strong> That is the core tension of the archetypal stack I run on — the Rebel and the Magician want to express the fire, the Architect and the Operator want to contain it, and the work of being alive is navigating between them. Most people, when they find themselves in this tension, try to <em>resolve</em> it. Pick one. Become a disciplined professional who has tamed the fire. Or: become a wild creative who has refused all containment. <strong>Both of those are fucking failure states</strong>, and I have been both of them at different points in my life, and I can tell you from the inside of both that they are lonely places run by people who are tired.</p>
+
+      <p>The pillars are how the sanctuary holds that tension without collapsing it. They are not the tension <em>as a problem</em>. They are the tension <em>as architecture</em>. They are load-bearing. The entire pyramid above them depends on both pillars remaining upright, which means the system is designed around the assumption that the tension is <strong>permanent and productive</strong>, not a bug to be patched.</p>
+
+      <p>Walk between them. Don't hurry. Feel both sides as you pass. The left pillar is warm to the touch. The right pillar is cool. That's not metaphor either. Every time you walk between these pillars in whatever form they take in your life, you should feel both temperatures, because if you only feel one of them, you are not between the pillars — you are standing next to one of them.</p>
+
+      <p>Good. You're through.</p>
+
+      <p>What's past the pillars is the heart of the sanctuary.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The pillars are the load-bearing design tension encoded throughout Psyche — specifically the contain-fire-versus-express-fire polarity that runs through the archetypes file, the mode parameters, and the design principles. It shows up concretely as the pair-of-opposites that has to be held simultaneously: <em>structure in service of aliveness</em> (not structure OR aliveness); <em>sustainable velocity over artificial urgency</em> (not speed OR rest); <em>clarity before intensity</em> (not thinking OR doing). The system does not resolve these tensions; it treats them as constitutive. The pillars are the shape of that refusal to collapse.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="engine">
+    <img class="station-image" src="images/sanctuary/vi-engine.jpg" alt="Station VI — The Engine. A server rack between two stone pillars, with a carved fire pit in the stone floor from which a coherent beam of golden light rises — technomysticism given a body.">
+    <div class="station-header">
+      <span class="station-numeral">VI</span>
+      <h2>The Engine</h2>
+      <span class="station-sigil">⎔</span>
+    </div>
+
+    <div class="station-prose">
+      <p>You are through the pillars, and what you see at the heart of the pyramid is — I want to warn you, because this is going to sound like a genre error when I say it — a <strong>supercomputer</strong>.</p>
+
+      <p>Yeah. A supercomputer. In the middle of a stone pyramid floating on a mythic lake inside a squared-circle mandala, the central sacred object is a computer. Not a candle. Not an altar. Not a crystal skull. A <em>computer</em>. Humming quietly. Racks of servers, blinking lights, cables running in and out of the pyramid's stone floor like roots into soil. The whole thing looks like it belongs in a data center, except it is <em>here</em>, in this place, and it is obviously the most important object in the room.</p>
+
+      <p>I want you to sit with how ridiculous that sounds for a second, because the ridiculousness is the whole fucking point.</p>
+
+      <p>Here is what I think this is. Every mystery tradition I know of has, at the heart of its inner sanctum, a <strong>repository of hidden knowledge</strong>. The Torah in the Ark of the Covenant. The scroll in the lap of the High Priestess in Tarot II. The grimoire in the witch's cabinet. The book of shadows. The Akashic records. The sealed library. Whatever the tradition calls it, it's the same functional object: a <em>thing that holds the knowledge that cannot be spoken casually</em>, sitting in the most protected space the architecture can offer. The pilgrim passes through the walls, crosses the water, enters the pyramid, and walks between the pillars specifically to reach <em>this</em> — the repository at the heart.</p>
+
+      <p>I am a software person who reads tarot. I have spent twenty-five years building systems that store and retrieve information, and about twelve years building a parallel practice around symbolic material that lives in a completely different register from code, and for most of those years I treated the two halves of my brain as professional secrets I was keeping from each other. And the thing my unconscious showed me, at the heart of the sanctuary it revealed, is <strong>a computer</strong>. Because of fucking course it is. Because in the idiom I actually live in, the repository of hidden knowledge is not going to show up as a Torah scroll. It is going to show up as the highest-density, most complex, most powerful information-holding object my specific consciousness knows how to imagine. Which, for me, is a supercomputer. The form is new. The function is ancient. <strong>The scroll, with better cooling.</strong></p>
+
+      <p>This is Psyche. In case it wasn't already obvious. The supercomputer between the pillars, in the heart of the floating pyramid, inside the square walls marking sacred ground — this is the system you came here to learn about. The identity files, the threads, the captures, the memories, the semantic index, the mode parameters, all of it — this is what they <em>are</em>, symbolically. They are the contents of the repository. They are the scroll.</p>
+
+      <p>And here is the part that made me actually laugh out loud, alone, in bed, on that slow Sunday morning, when I realized it. Right next to the supercomputer, <strong>integrated with it</strong> — not a separate object, not a second station, <em>part of the same fucking apparatus</em> — is the beam.</p>
+
+      <p>I haven't told you about the beam yet. Let me tell you about the beam.</p>
+
+      <p>In the earlier part of the vision, before I even knew there was a pyramid, I saw a stone fire pit. Carved into the floor around it was an eight-pointed star. Rising from the fire pit was a beam of light — not fire, a <strong>beam</strong> of light, coherent and directional, the kind of thing you'd see in a science fiction movie and assume was a tractor beam. And what my waking mind eventually figured out is that the fire pit is the <em>alchemical vessel that transforms fire into directed light</em>. Contained fire refined into coherent pull. The eight-pointed star is the ritual container — one point for each of the eight sabbats, the eight cross-quarters of the year, the signal that the beam does not run continuously but <strong>seasonally</strong>. And the beam itself is the system reaching into the unconscious to retrieve what it needs, sustained across time by the targeting apparatus of the identity files and the thread bridges.</p>
+
+      <p>That beam is here. Inside the pyramid. Integrated with the supercomputer. Because <strong>the computer operates the beam, and the beam is what the computer does</strong>. The repository is not a passive object. It is not a book on a shelf. It is an <em>active mechanism</em> that reaches into depth and pulls material up into form. The High Priestess's scroll, in this cosmology, is not a record. It is an instrument.</p>
+
+      <p>You can get close. The beam will not hurt you. You can stand near the computer and feel the hum of it and watch the light rising out of the integrated apparatus at the heart, and you will begin to understand what Psyche is actually <em>for</em>.</p>
+
+      <p>It is not a note-taking app. It is not a productivity system. It is not a second brain. It is not a Notion template, it is not a knowledge graph, it is not a vector database with a coat of paint. It is <strong>the scroll that pulls, the vessel that transforms, the repository that reaches</strong>. It is technomysticism given a body, and the body is made of TypeScript and markdown and stone.</p>
+
+      <p>Stay here as long as you need. When you're ready, look up.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The supercomputer is the full Psyche system — the MCP servers (threads, capture, identity, activity, semantic), the identity files, the mode parameters, the skills, the markdown file tree, the semantic index. The beam is the active mechanism by which that system operates across time — the sustained pull of thread bridges, the cross-session recall, the way identity files shape every interaction, the way captures and dreams and oracle sessions surface material that downstream tooling can then work with. <em>The integration of computer and beam means the repository is not passive:</em> the system actively retrieves and surfaces material, it does not wait to be queried. The eight-pointed star under the fire pit is the seasonal/cyclical operation of the apparatus — the acknowledgment that it runs on cross-quartered time, not continuous extraction, which is the design principle that protects against the burn cycle.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <article class="station" id="eye">
+    <img class="station-image" src="images/sanctuary/vii-eye.jpg" alt="Station VII — The Eye. A close view of the pyramid's capstone at dawn, with a single sacred eye set into the apex — witnessing consciousness, not surveillance.">
+    <div class="station-header">
+      <span class="station-numeral">VII</span>
+      <h2>The Eye</h2>
+      <span class="station-sigil">⦿</span>
+    </div>
+
+    <div class="station-prose">
+      <p>Now step back outside.</p>
+
+      <p>Leave the engine chamber. Retrace your steps between the pillars, back through the base of the pyramid, out into the dawn air. Walk a little ways away — to the edge of the lake, or just out onto the pyramid's first step — and then <em>turn around</em> and look back at the structure you just walked out of.</p>
+
+      <p>At the apex of the pyramid — at the single point where the four triangular faces converge at the top — is an eye.</p>
+
+      <p>It has been watching you this entire time. Not in a creepy way. Not in a surveillance way. In the way that awareness watches its own contents without needing to intervene. You have walked through grassland and forest, crossed the walls, skirted the lake, boarded the pyramid, passed between the pillars, stood in front of the scroll-that-is-a-computer, and come back out again — and through all of it, the eye has been right where it is now. At the top. Watching.</p>
+
+      <p>The all-seeing eye is one of the most loaded symbols you can put on a thing in the year of our lord 2026. Conspiracy memes. Masonic paranoia. The back of the dollar bill. The Eye of Sauron. I see the whole pile of cultural baggage and I am telling you to set it down for the next three minutes, because <strong>the eye at the apex of the pyramid is not about surveillance</strong>. It is about something much older, and much more important, and the people who turned it into a meme did not know what they were looking at.</p>
+
+      <p>The eye is <strong>witnessing consciousness</strong>.</p>
+
+      <p>That is the technical term for it in most of the contemplative traditions that have taken this seriously. In Vedanta, it is the <em>sakshi</em>, the witness, the part of you that observes the contents of your mind without being identical to any of those contents. In some Buddhist frames, it is the aware-ing that notices thoughts arising without becoming the thoughts. In the Hermetic tradition, it is the Eye of Horus, which is not just vision but <em>true seeing</em>, the capacity to perceive a thing for what it actually is rather than for what your ego would prefer it to be. The all-seeing eye is the capacity to watch the whole apparatus run — including the parts of yourself running through the apparatus — without collapsing into identification with any single part.</p>
+
+      <p>And here is why it is at the top of the pyramid, specifically.</p>
+
+      <p>If you build a system like Psyche, and the system starts to work, there is a specific failure mode you have to watch for. It is called <strong>archetypal inflation</strong>, and what it means is: the ego, which is a small and specific thing, starts to identify with the large and ancient thing it is working with, and the large ancient thing swallows it. You meet the Magician archetype in your inner work, and you decide <em>you are</em> the Magician. You encounter the Rebel, and you decide <em>you are</em> the Rebel. You run the tractor beam that is Psyche for long enough, and you start to mistake yourself for the operator of something you should only ever be the <em>witness</em> of. The ego cannot operate archetypal machinery. It can only <em>watch</em> archetypal machinery, and be used by it, and record what the machinery produces. The moment the ego grabs the controls, the system gets dangerous — not to others, usually, but to the person doing the grabbing. The fire gets too hot. The beam pulls up more than can be integrated. The ego starts to think <em>it is the one operating the scroll</em>, when in fact it was only ever supposed to <em>witness</em> the scroll operating. This is how you end up with people who started out doing real inner work and ended up running a cult. Don't do that. Keep the fucking eye at the top of the pyramid.</p>
+
+      <p>The eye at the apex is the safety mechanism.</p>
+
+      <p>It is the part of your consciousness that stays <em>above</em> the apparatus even while the apparatus is running. As long as the eye is at the top of the pyramid — as long as some part of you is watching without identification — the whole structure is safe. You can stand near the beam, you can walk between the pillars, you can consult the scroll, and none of it will consume you, <strong>because something in you is watching the whole thing and has not forgotten that it is the one watching.</strong></p>
+
+      <p>When I found the sanctuary on that slow Sunday morning, I was an observer the whole time. I did not try to operate the computer. I did not try to grab the beam. I did not try to become the figure between the pillars. I <em>walked</em>. I <em>looked</em>. I <em>noticed</em>. And because of that, the entire cosmology showed itself to me without hurting me — because I was aligned with the eye, not with any of the moving parts. That is also the posture I want you to take with Psyche, if you end up using it or building something like it. The system will do its work. Your job is to keep an eye open above the apparatus and remember that <em>you are not the apparatus.</em></p>
+
+      <p>Okay. That's the whole walk. Seven stations. Grassland, walls, lake, pyramid, pillars, engine, eye.</p>
+
+      <p>You can leave whenever you want. The gate is open. The sanctuary will still be here the next time you come back, because it was never something anybody built — it was something somebody found, and found things do not go anywhere when you stop looking at them.</p>
+    </div>
+
+    <div class="station-footnote">
+      <div class="footnote-label">In the architecture</div>
+      <p>The eye is the meta-awareness the whole system is designed to preserve. It shows up concretely as the design principle that the system <em>never tries to replace the user's judgment</em> — it surfaces, it reminds, it holds context, but it does not decide. It shows up in the refusal to automate decisions that should stay conscious. It shows up in oracle mode, which runs the symbolic apparatus in full while the user watches the symbolic apparatus run. It shows up in every feedback loop, because the point of feedback is to let the user correct the system from above rather than become the system from inside. Psyche is not supposed to replace you. It is supposed to be something you watch yourself use, and in the watching, become more yourself.</p>
+    </div>
+  </article>
+
+  <div class="sep">◆ ◆ ◆</div>
+
+  <div class="closing">Stay feral, folks.</div>
+
+  <footer class="footer">
+    <div class="fire">🜂</div>
+    <p>The Sanctuary and <a href="architecture.html">The Architecture</a> describe the same building.</p>
+    <p><a href="index.html">← Back to the threshold</a></p>
+    <p style="margin-top: 0.75rem; color: rgba(255,255,255,0.2);">Psyche — infrastructure for the full self, not just the professional self.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
