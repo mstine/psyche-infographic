@@ -8,21 +8,21 @@
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
   :root {
-    --void: #0a0a0f;
-    --obsidian: #12121a;
-    --smoke: #1a1a2e;
-    --sigil: #7b2d8e;
-    --sigil-glow: #9b4dca;
-    --ember: #e85d26;
-    --ember-glow: #ff7b42;
+    --void: #0d0620;
+    --obsidian: #140a28;
+    --smoke: #1a0f2e;
+    --sigil: #5a1fb8;
+    --sigil-glow: #7a2cff;
+    --ember: #ff3cac;
+    --ember-glow: #ff6fc8;
     --bone: #e8e0d4;
     --ash: #8a8a9a;
     --ghost: #c4beb4;
-    --thread-gold: #d4a855;
-    --capture-teal: #3dbfa0;
-    --identity-violet: #a87ce0;
-    --activity-rose: #e06a8a;
-    --semantic-blue: #4a9ede;
+    --thread-gold: #9d5aff;
+    --capture-teal: #5be7ff;
+    --identity-violet: #c9a3ff;
+    --activity-rose: #ff3cac;
+    --semantic-blue: #a8f0ff;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,9 +40,9 @@
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background:
-      radial-gradient(circle at 20% 30%, rgba(123, 45, 142, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(232, 93, 38, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(212, 168, 85, 0.03) 0%, transparent 60%);
+      radial-gradient(circle at 20% 30%, rgba(122, 44, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 60, 172, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(91, 231, 255, 0.04) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -97,9 +97,10 @@
     font-size: 1.15rem;
     font-weight: 300;
     color: var(--ghost);
-    max-width: 700px;
+    max-width: 760px;
     margin: 0 auto;
     line-height: 1.8;
+    text-wrap: balance;
   }
 
   .hero .tagline em {
@@ -145,8 +146,8 @@
   }
 
   .principle {
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(18, 18, 26, 0.9) 100%);
-    border: 1px solid rgba(123, 45, 142, 0.15);
+    background: linear-gradient(135deg, rgba(26, 15, 46, 0.8) 0%, rgba(20, 10, 40, 0.9) 100%);
+    border: 1px solid rgba(122, 44, 255, 0.18);
     border-radius: 8px;
     padding: 1.5rem;
     position: relative;
@@ -155,7 +156,7 @@
   }
 
   .principle:hover {
-    border-color: rgba(123, 45, 142, 0.4);
+    border-color: rgba(122, 44, 255, 0.45);
   }
 
   .principle::before {
@@ -192,8 +193,8 @@
     text-align: center;
     padding: 2.5rem 2rem;
     margin: 2rem 0;
-    background: linear-gradient(135deg, rgba(123, 45, 142, 0.08) 0%, rgba(232, 93, 38, 0.05) 100%);
-    border: 1px solid rgba(123, 45, 142, 0.2);
+    background: linear-gradient(135deg, rgba(122, 44, 255, 0.10) 0%, rgba(255, 60, 172, 0.06) 100%);
+    border: 1px solid rgba(122, 44, 255, 0.22);
     border-radius: 12px;
     position: relative;
   }
@@ -245,12 +246,12 @@
     text-transform: uppercase;
     margin-bottom: 0.75rem;
     padding-left: 0.5rem;
-    border-left: 2px solid rgba(123, 45, 142, 0.3);
+    border-left: 2px solid rgba(122, 44, 255, 0.35);
   }
 
   .servers-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
   }
 
@@ -306,6 +307,15 @@
   .server-card.activity h4 { color: var(--activity-rose); }
   .server-card.semantic { border-top: 2px solid var(--semantic-blue); }
   .server-card.semantic h4 { color: var(--semantic-blue); }
+  .server-card.credentials {
+    border-top: 2px dashed rgba(255,255,255,0.28);
+    opacity: 0.78;
+  }
+  .server-card.credentials h4 { color: rgba(255,255,255,0.55); }
+  .server-card.workspace { border-top: 2px solid var(--ember-glow); }
+  .server-card.workspace h4 { color: var(--ember-glow); }
+  .server-card.media { border-top: 2px solid var(--sigil-glow); }
+  .server-card.media h4 { color: var(--sigil-glow); }
 
   .data-flow {
     display: grid;
@@ -315,7 +325,7 @@
   }
 
   .flow-card {
-    background: rgba(26, 26, 46, 0.5);
+    background: rgba(26, 15, 46, 0.5);
     border: 1px solid rgba(255,255,255,0.04);
     border-radius: 8px;
     padding: 1rem 1.25rem;
@@ -362,7 +372,7 @@
   }
 
   .storage-note {
-    background: rgba(26, 26, 46, 0.5);
+    background: rgba(26, 15, 46, 0.5);
     border-left: 2px solid var(--thread-gold);
     padding: 1rem 1.25rem;
     border-radius: 0 8px 8px 0;
@@ -419,7 +429,7 @@
 
   .abstraction {
     padding: 1.25rem;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(10, 10, 15, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(26, 15, 46, 0.6) 0%, rgba(13, 6, 32, 0.8) 100%);
     border: 1px solid rgba(255,255,255,0.04);
     border-radius: 8px;
     position: relative;
@@ -481,8 +491,8 @@
   .skill-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
-    background: rgba(123, 45, 142, 0.12);
-    border: 1px solid rgba(123, 45, 142, 0.2);
+    background: rgba(122, 44, 255, 0.14);
+    border: 1px solid rgba(122, 44, 255, 0.22);
     border-radius: 20px;
     padding: 0.35rem 0.85rem;
     color: var(--sigil-glow);
@@ -490,8 +500,8 @@
   }
 
   .skill-tag:hover {
-    background: rgba(123, 45, 142, 0.2);
-    border-color: rgba(123, 45, 142, 0.4);
+    background: rgba(122, 44, 255, 0.22);
+    border-color: rgba(122, 44, 255, 0.45);
   }
 
   .sep {
@@ -557,7 +567,7 @@
     .hero h1 { font-size: 3rem; }
     .path-nav { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
     .philosophy { grid-template-columns: 1fr; }
-    .servers-grid { grid-template-columns: repeat(3, 1fr); }
+    .servers-grid { grid-template-columns: repeat(2, 1fr); }
     .tech-grid { grid-template-columns: repeat(2, 1fr); }
     .abstractions-grid { grid-template-columns: repeat(2, 1fr); }
     .modes-strip { grid-template-columns: repeat(3, 1fr); }
@@ -588,9 +598,8 @@
     <h1>PSYCHE</h1>
     <div class="subtitle">A Cognitive Scaffold for the Feral Mind</div>
     <p class="tagline">
-      Five MCP servers. Markdown all the way down. Local-first, file-based, git-versioned.<br>
-      Built to preserve the natural flow of <em>curiosity-driven, multi-threaded thinking</em> — <br>
-      so nothing valuable gets lost and ideas can become real artifacts with minimal toil.
+      Eight MCP servers. Markdown all the way down. Local&#8209;first, file&#8209;based, git&#8209;versioned.<br>
+      Built to preserve the natural flow of <em>curiosity&#8209;driven, multi&#8209;threaded thinking</em> — so nothing valuable gets lost, and ideas become real artifacts with minimal toil.
     </p>
   </header>
 
@@ -658,6 +667,9 @@
         <span class="skill-tag">/learn</span>
         <span class="skill-tag">/reconcile</span>
         <span class="skill-tag">/review-swipe</span>
+        <span class="skill-tag">/podcast</span>
+        <span class="skill-tag">/update</span>
+        <span class="skill-tag">/sync</span>
       </div>
     </div>
 
@@ -674,13 +686,13 @@
           <span class="icon">🜁</span>
           <h4>psyche-capture</h4>
           <p>Raw material intake. Swipe files by focus area. URL extraction. Zero filing decisions at capture time.</p>
-          <div class="tools">5 tools · capture · list · search · get · review</div>
+          <div class="tools">6 tools · capture · list · search · get · review · focus-areas</div>
         </div>
         <div class="server-card identity">
           <span class="icon">🜃</span>
           <h4>psyche-identity</h4>
           <p>Self-model, modes, memory, relationships, feedback loops, learned preferences. The system that knows you.</p>
-          <div class="tools">10 tools · identity · modes · memory · relationships · feedback · learning</div>
+          <div class="tools">9 tools · identity · modes · memory · relationships · feedback · learning</div>
         </div>
         <div class="server-card activity">
           <span class="icon">🜂</span>
@@ -693,6 +705,24 @@
           <h4>psyche-semantic</h4>
           <p>Vector search across the full corpus. Ollama embeddings with keyword fallback. Cross-content-type recall.</p>
           <div class="tools">3 tools · semantic_recall · rebuild_index · index_status</div>
+        </div>
+        <div class="server-card credentials">
+          <span class="icon">🔐</span>
+          <h4>psyche-credentials</h4>
+          <p>Encrypted OAuth token store. Per-account routing — personal and work identities stay distinct. PKCE flow. Silent refresh. Infrastructure beneath workspace and media.</p>
+          <div class="tools">3 tools · setup · health · service-config</div>
+        </div>
+        <div class="server-card workspace">
+          <span class="icon">📬</span>
+          <h4>psyche-workspace</h4>
+          <p>Google Mail, Calendar, Drive, Docs, Sheets. Multi-account. Read + write with lazy write-scope re-auth. /align surfaces today's schedule automatically.</p>
+          <div class="tools">10 tools · gmail · calendar · drive · docs · sheets</div>
+        </div>
+        <div class="server-card media">
+          <span class="icon">🜏</span>
+          <h4>psyche-media</h4>
+          <p>Spotify playback + device routing + mode-aware playlist learning (offer, never auto-play). Podcast pipeline: Riverside transcript → voice-preserving show notes + social seeds.</p>
+          <div class="tools">18 tools · playback · learning · podcast</div>
         </div>
       </div>
     </div>
@@ -731,6 +761,18 @@
       <div class="flow-card">
         <div class="flow-label">Identity → Everything</div>
         <p>Values, voice, archetypes, cognitive profile, and design principles loaded every session. The self-model is the gravity well — everything else orbits it.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Credentials → External APIs</div>
+        <p>Per-account OAuth routing. Personal and work Google are distinct identities — no collision. Tokens encrypted on disk, refreshed silently. No plaintext in the repo.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Mode → Music</div>
+        <p>Entering a mode surfaces a playlist suggestion via psyche-media. An offer, never an auto-play. Accepted selections write to learned-preferences — the system learns which playlist fits which mode.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Transcript → Show Notes</div>
+        <p>Riverside export → voice-preserving draft + chapter extraction + thread-matched capture suggestions + 3-5 social post seeds. One pass from <code>/podcast</code>. Guest relationship graph enriches automatically.</p>
       </div>
     </div>
   </section>
@@ -789,6 +831,16 @@
         <span class="glyph">📡</span>
         <h4>Feedback Signal</h4>
         <p>Accepted / rejected / ignored. The system's learning substrate. Aggregated into preferences deterministically — no AI in the feedback synthesis loop.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">🔐</span>
+        <h4>Service Config</h4>
+        <p>Per-account OAuth routing rule. <code>{service}:{account}</code> key. Personal Google, work Google, and Spotify stay as distinct identities. Encrypted storage, silent refresh, scope-incremental re-auth.</p>
+      </div>
+      <div class="abstraction">
+        <span class="glyph">🎙️</span>
+        <h4>Episode</h4>
+        <p>Structured podcast record — title, guest, date, status, links, thread_slug. Produced from <code>/podcast</code> against a Riverside transcript. Guest relationship graph updates automatically.</p>
       </div>
     </div>
   </section>
@@ -865,6 +917,9 @@
         <span class="dir">├── relationships/</span> <span class="comment">← person records</span><br>
         <span class="dir">├── feedback/</span> <span class="comment">← learning signals</span><br>
         <span class="dir">├── learning/</span> <span class="comment">← synthesized preferences</span><br>
+        <span class="dir">├── credentials/</span> <span class="comment">← encrypted OAuth tokens</span><br>
+        <span class="dir">├── media/</span> <span class="comment">← playlist prefs</span><br>
+        <span class="dir">├── podcast/</span> <span class="comment">← episodes + transcript cache</span><br>
         <span class="dir">└── semantic/</span> <span class="comment">← vector index</span>
       </div>
 
@@ -930,6 +985,14 @@
       <div class="tech-item">
         <div class="label">URL Parse</div>
         <div class="value">readability + linkedom</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Auth</div>
+        <div class="value">OAuth PKCE + Keychain</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">External APIs</div>
+        <div class="value">Google · Spotify</div>
       </div>
     </div>
   </section>
