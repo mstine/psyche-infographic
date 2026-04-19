@@ -591,6 +591,7 @@
     <div class="path-links">
       <a href="index.html">◈ Threshold</a>
       <a href="sanctuary.html">◯ The Sanctuary →</a>
+      <a href="chart.html">☉ The Chart →</a>
     </div>
   </nav>
 
@@ -668,6 +669,8 @@
         <span class="skill-tag">/reconcile</span>
         <span class="skill-tag">/review-swipe</span>
         <span class="skill-tag">/podcast</span>
+        <span class="skill-tag">/social</span>
+        <span class="skill-tag">/social-schedule</span>
         <span class="skill-tag">/update</span>
         <span class="skill-tag">/sync</span>
       </div>
@@ -709,20 +712,20 @@
         <div class="server-card credentials">
           <span class="icon">🔐</span>
           <h4>psyche-credentials</h4>
-          <p>Encrypted OAuth token store. Per-account routing — personal and work identities stay distinct. PKCE flow. Silent refresh. Infrastructure beneath workspace and media.</p>
-          <div class="tools">3 tools · setup · health · service-config</div>
+          <p>AES-256-GCM encrypted token vault with HKDF per-file keys and macOS Keychain master. Per-account OAuth routing. PKCE flow. Silent refresh. Structured <code>decryption_failed</code> health status. Infrastructure beneath workspace and media.</p>
+          <div class="tools">5 tools · setup · health · api-key · service-config</div>
         </div>
         <div class="server-card workspace">
           <span class="icon">📬</span>
           <h4>psyche-workspace</h4>
-          <p>Google Mail, Calendar, Drive, Docs, Sheets. Multi-account. Read + write with lazy write-scope re-auth. /align surfaces today's schedule automatically.</p>
+          <p>Google Mail, Calendar, Drive, Docs, Sheets — across two distinct accounts (personal + work) with no token collision. Read + write, lazy write-scope re-auth. /align surfaces today's schedule automatically.</p>
           <div class="tools">10 tools · gmail · calendar · drive · docs · sheets</div>
         </div>
         <div class="server-card media">
           <span class="icon">🜏</span>
           <h4>psyche-media</h4>
-          <p>Spotify playback + device routing + mode-aware playlist learning (offer, never auto-play). Podcast pipeline: Riverside transcript → voice-preserving show notes + social seeds.</p>
-          <div class="tools">18 tools · playback · learning · podcast</div>
+          <p>Spotify playback + device routing + mode-aware playlist learning (offer, never auto-play). Podcast pipeline (Riverside transcript → show notes + social seeds). Social pipeline — multi-platform drafts, IG carousel render via satori+sharp, Substack chopping, Buffer GraphQL scheduling.</p>
+          <div class="tools">32 tools · playback · podcast · social · carousel · substack · buffer</div>
         </div>
       </div>
     </div>
@@ -773,6 +776,18 @@
       <div class="flow-card">
         <div class="flow-label">Transcript → Show Notes</div>
         <p>Riverside export → voice-preserving draft + chapter extraction + thread-matched capture suggestions + 3-5 social post seeds. One pass from <code>/podcast</code>. Guest relationship graph enriches automatically.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Draft → Multi-Platform → Schedule</div>
+        <p><code>/social</code> produces platform-specific drafts (LinkedIn, X, Threads, IG, Substack). <code>/social-schedule</code> sends them to Buffer GraphQL or chops Substack longform via Playwright. Two-event activity model — scheduled then published — keeps the lifecycle honest.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">Draft → IG Carousel → Hosted</div>
+        <p>HTML slides rendered to PNG via satori + sharp at 1080×1350, published as GitHub raw URLs (free, durable, version-controlled). <code>prepare_carousel_for_schedule</code> composes render → publish → finalize behind one MCP surface. Idempotent on hosted-asset state probe.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-label">GSD ↔ Psyche</div>
+        <p>Threads link to GSD project roots via <code>gsd_project</code> frontmatter. <code>resume_thread</code> auto-enriches with current phase + plan state. <code>/align</code> surfaces GSD context inline. Ambient behaviors suppressed inside GSD subagent contexts — clean coexistence, neither absorbs the other.</p>
       </div>
     </div>
   </section>
@@ -917,9 +932,13 @@
         <span class="dir">├── relationships/</span> <span class="comment">← person records</span><br>
         <span class="dir">├── feedback/</span> <span class="comment">← learning signals</span><br>
         <span class="dir">├── learning/</span> <span class="comment">← synthesized preferences</span><br>
-        <span class="dir">├── credentials/</span> <span class="comment">← encrypted OAuth tokens</span><br>
+        <span class="dir">├── credentials/</span> <span class="comment">← AES-256-GCM token vault</span><br>
         <span class="dir">├── media/</span> <span class="comment">← playlist prefs</span><br>
         <span class="dir">├── podcast/</span> <span class="comment">← episodes + transcript cache</span><br>
+        <span class="dir">├── social/</span> <span class="comment">← platform drafts + scheduled posts</span><br>
+        <span class="dir">├── drafts/</span> <span class="comment">← long-form artifacts in voice</span><br>
+        <span class="dir">├── knowledge/</span> <span class="comment">← curated reference corpora</span><br>
+        <span class="dir">├── sessions/</span> <span class="comment">← pre-compression snapshots</span><br>
         <span class="dir">└── semantic/</span> <span class="comment">← vector index</span>
       </div>
 
@@ -991,8 +1010,24 @@
         <div class="value">OAuth PKCE + Keychain</div>
       </div>
       <div class="tech-item">
+        <div class="label">Vault</div>
+        <div class="value">AES-256-GCM + HKDF</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Carousel Render</div>
+        <div class="value">satori + sharp</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Web Automation</div>
+        <div class="value">Playwright + Python</div>
+      </div>
+      <div class="tech-item">
         <div class="label">External APIs</div>
-        <div class="value">Google · Spotify</div>
+        <div class="value">Google · Spotify · Buffer</div>
+      </div>
+      <div class="tech-item">
+        <div class="label">Test Suite</div>
+        <div class="value">Vitest · 600+ tests</div>
       </div>
     </div>
   </section>
@@ -1030,6 +1065,14 @@
       <div class="principle">
         <h3>Fire Preservation</h3>
         <p>The system is built to protect creative fire — irreverence, sovereignty, originality — from the forces that flatten it. It does not soften, sanitize, or optimize for acceptability. The fire being alive is the success state.</p>
+      </div>
+      <div class="principle">
+        <h3>Drift Guards as First-Class Infrastructure</h3>
+        <p>Three code-enforced lints live in the repo: skill drift (byte-identical between repo source and installed location), frontmatter contract (every <code>mcp__*__*</code> call in a skill body must be declared in <code>allowed-tools</code>), and handle drift (<code>git grep --fixed-strings</code> bounded to tracked files, self-protected via split-literal). Class-of-defect closure, not single-bug fix. The system protects itself from the failure modes it has already seen.</p>
+      </div>
+      <div class="principle">
+        <h3>Repo-Canonical Skills</h3>
+        <p>All 15 Psyche skills versioned in the project repo as canonical source. <code>psyche-update.sh</code> installs from repo to <code>~/.claude/skills/</code>. Source of truth lives in version control — not in the user home directory. The drift-guard test enforces sync. One-command pull → rebuild → test → install → verify.</p>
       </div>
     </div>
   </section>

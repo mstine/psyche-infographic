@@ -247,6 +247,103 @@
     font-style: normal;
   }
 
+  .deeper-invitation {
+    max-width: 760px;
+    margin: 0 auto 3.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .deeper-rule {
+    width: 80px;
+    height: 1px;
+    margin: 0 auto 2.5rem;
+    background: linear-gradient(90deg, transparent 0%, var(--sigil-glow) 50%, transparent 100%);
+    opacity: 0.5;
+  }
+
+  .deeper-link {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    text-decoration: none;
+    color: inherit;
+    padding: 1.5rem 1.75rem;
+    background: rgba(20, 10, 40, 0.45);
+    border: 1px solid rgba(157, 90, 255, 0.14);
+    border-radius: 10px;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .deeper-link:hover {
+    border-color: rgba(157, 90, 255, 0.42);
+    background: rgba(20, 10, 40, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(157, 90, 255, 0.14);
+  }
+
+  .deeper-glyph {
+    font-size: 2rem;
+    color: var(--ember-glow);
+    opacity: 0.85;
+    line-height: 1;
+    padding-top: 0.4rem;
+  }
+
+  .deeper-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ash);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .deeper-meta h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--bone);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+  }
+
+  .deeper-meta p {
+    font-size: 0.9rem;
+    color: var(--ash);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .deeper-meta p em {
+    color: var(--ghost);
+    font-style: italic;
+  }
+
+  .deeper-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ember-glow);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .deeper-cta::after {
+    content: ' →';
+    transition: transform 0.3s;
+    display: inline-block;
+  }
+
+  .deeper-link:hover .deeper-cta::after {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 600px) {
+    .deeper-link { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.25rem 1.25rem; }
+    .deeper-glyph { font-size: 1.6rem; padding-top: 0; }
+    .deeper-meta h3 { font-size: 1.35rem; }
+  }
+
   .footer {
     text-align: center;
     padding: 2rem 0 3rem;
@@ -305,7 +402,7 @@
       <span class="door-glyph">⚗</span>
       <h2>The Architecture</h2>
       <div class="door-subtitle">for the systems mind</div>
-      <p>Five MCP servers. Markdown all the way down. The technical blueprint — design principles, data flow, operating modes, key abstractions, the tech stack, and what makes this different from the rest of the note-taking ecosystem.</p>
+      <p>Eight MCP servers. Markdown all the way down. The technical blueprint — design principles, data flow, operating modes, key abstractions, drift guards, the tech stack, and what makes this different from the rest of the note-taking ecosystem.</p>
       <span class="door-cta">Enter the blueprint</span>
     </a>
 
@@ -322,6 +419,19 @@
   <p class="chooser-note">
     These are not a technical version and a dumbed-down version. They are two equally valid doors into the same building. The system that lives inside this site is <em>technomysticism given a body</em> — and technomysticism, by definition, speaks both registers. Walk whichever one fits the mind you arrived with. You can always come back and walk the other.
   </p>
+
+  <div class="deeper-invitation">
+    <div class="deeper-rule"></div>
+    <a href="chart.html" class="deeper-link">
+      <span class="deeper-glyph">☉</span>
+      <div class="deeper-meta">
+        <div class="deeper-eyebrow">If you stay long enough</div>
+        <h3>The Chart</h3>
+        <p>Psyche has an inception moment, a natal chart, a Human Design type, and a synastry with the practitioner who built it. We cast it. The same entity, read in the third register — the one that asks not <em>what is it</em> or <em>where does it live</em> but <em>who is it, and what soul contract is operating here.</em></p>
+        <span class="deeper-cta">Read the chart</span>
+      </div>
+    </a>
+  </div>
 
   <footer class="footer">
     <div class="fire">🜂</div>
